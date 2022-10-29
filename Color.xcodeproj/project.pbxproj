@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		27F92D78290D0A6600CC0896 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27F92D77290D0A6600CC0896 /* main.cpp */; };
+		27F92D86290D0BA000CC0896 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 27F92D85290D0BA000CC0896 /* glad.c */; };
+		27F92D8C290D144100CC0896 /* libglfw.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F92D81290D0B9400CC0896 /* libglfw.3.dylib */; };
+		27F92D8D290D144100CC0896 /* libglfw.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 27F92D81290D0B9400CC0896 /* libglfw.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		27F92D8F290D144A00CC0896 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F92D7F290D0B6800CC0896 /* libglfw3.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -20,11 +24,29 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		27F92D8E290D144100CC0896 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				27F92D8D290D144100CC0896 /* libglfw.3.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		27F92D74290D0A6600CC0896 /* Color */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Color; sourceTree = BUILT_PRODUCTS_DIR; };
 		27F92D77290D0A6600CC0896 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		27F92D7F290D0B6800CC0896 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../Desktop/openGL_cpp/libs/libglfw3.a; sourceTree = "<group>"; };
+		27F92D81290D0B9400CC0896 /* libglfw.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.dylib; path = ../../Desktop/openGL_cpp/libs/libglfw.3.dylib; sourceTree = "<group>"; };
+		27F92D85290D0BA000CC0896 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../Desktop/openGL_cpp/libs/glad.c; sourceTree = "<group>"; };
+		27F92D88290D117A00CC0896 /* lightShader.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightShader.fs; sourceTree = "<group>"; };
+		27F92D89290D117A00CC0896 /* lightShader.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightShader.vs; sourceTree = "<group>"; };
+		27F92D8A290D117A00CC0896 /* cubeShader.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cubeShader.vs; sourceTree = "<group>"; };
+		27F92D8B290D117A00CC0896 /* cubeShader.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = cubeShader.fs; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +54,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27F92D8C290D144100CC0896 /* libglfw.3.dylib in Frameworks */,
+				27F92D8F290D144A00CC0896 /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,8 +65,10 @@
 		27F92D6B290D0A6600CC0896 = {
 			isa = PBXGroup;
 			children = (
+				27F92D85290D0BA000CC0896 /* glad.c */,
 				27F92D76290D0A6600CC0896 /* Color */,
 				27F92D75290D0A6600CC0896 /* Products */,
+				27F92D7E290D0B6800CC0896 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +83,30 @@
 		27F92D76290D0A6600CC0896 /* Color */ = {
 			isa = PBXGroup;
 			children = (
+				27F92D87290D0BAD00CC0896 /* shaders */,
 				27F92D77290D0A6600CC0896 /* main.cpp */,
 			);
 			path = Color;
+			sourceTree = "<group>";
+		};
+		27F92D7E290D0B6800CC0896 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				27F92D81290D0B9400CC0896 /* libglfw.3.dylib */,
+				27F92D7F290D0B6800CC0896 /* libglfw3.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		27F92D87290D0BAD00CC0896 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				27F92D8B290D117A00CC0896 /* cubeShader.fs */,
+				27F92D8A290D117A00CC0896 /* cubeShader.vs */,
+				27F92D88290D117A00CC0896 /* lightShader.fs */,
+				27F92D89290D117A00CC0896 /* lightShader.vs */,
+			);
+			path = shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -72,6 +119,7 @@
 				27F92D70290D0A6600CC0896 /* Sources */,
 				27F92D71290D0A6600CC0896 /* Frameworks */,
 				27F92D72290D0A6600CC0896 /* CopyFiles */,
+				27F92D8E290D144100CC0896 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -120,6 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				27F92D78290D0A6600CC0896 /* main.cpp in Sources */,
+				27F92D86290D0BA000CC0896 /* glad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +288,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /Users/j10j0/Desktop/openGL_cpp/include;
+				LIBRARY_SEARCH_PATHS = /Users/j10j0/Desktop/openGL_cpp/libs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -247,6 +298,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /Users/j10j0/Desktop/openGL_cpp/include;
+				LIBRARY_SEARCH_PATHS = /Users/j10j0/Desktop/openGL_cpp/libs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
