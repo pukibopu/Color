@@ -147,11 +147,10 @@ int main(int argc, const char * argv[]) {
     //texture
     unsigned int diffuseMap=loadTexture("container2.png");
     unsigned int specularMap=loadTexture("container2_specular.png");
-    
+    unsigned int emissionMap=loadTexture("matrix.jpg");
     
     cubeShader.use();
-    cubeShader.setInt("diffuse", 0);
-    cubeShader.setInt("specular", 1);
+  
     
     while (!glfwWindowShouldClose(window))
     {
@@ -180,8 +179,10 @@ int main(int argc, const char * argv[]) {
         cubeShader.use();
         cubeShader.setInt("material.diffuse", 0);
         cubeShader.setInt("material.specular", 1);
-        
+        cubeShader.setInt("material.emission", 2);
         cubeShader.setFloat("material.shininess", 32.0f);
+        cubeShader.setFloat("matrixLight", 1.0f+sin(glfwGetTime()*5)/2+0.1f);
+        cubeShader.setFloat("matrixMove", glfwGetTime()*0.05f);
         
         cubeShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
         cubeShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
@@ -205,6 +206,8 @@ int main(int argc, const char * argv[]) {
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specularMap);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, emissionMap);
         glBindVertexArray(itemVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         
