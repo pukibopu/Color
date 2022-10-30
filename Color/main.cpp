@@ -29,7 +29,7 @@ void processInput(GLFWwindow *window);
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
+unsigned int loadTexture(char const * path);
 Camera camera(glm::vec3(0.0f,0.0f,3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -145,47 +145,13 @@ int main(int argc, const char * argv[]) {
     glEnableVertexAttribArray(0);
     
     //texture
-    unsigned int texture1;
-    glGenTextures(1,&texture1);
-    glBindBuffer(GL_TEXTURE_2D,texture1);
-    
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    unsigned int diffuseMap=loadTexture("container2.png");
+    unsigned int specularMap=loadTexture("container2_specular.png");
     
     
-    //load
-    int width,height,nrChannel;
-    unsigned char *data=stbi_load("container2.png", &width, &height, &nrChannel, 0);
-    if(data){
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }else {
-        std::cout<<"Error to load texture"<<std::endl;
-    }
-    stbi_image_free(data);
-    
-    
-    unsigned int texture2;
-    glGenTextures(1,&texture2);
-    glBindBuffer(GL_TEXTURE_2D,texture2);
-    
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    
-    data=stbi_load("container2_specular.png", &width, &height, &nrChannel, 0);
-    if(data){
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }else {
-        std::cout<<"Error to load texture"<<std::endl;
-    }
-    stbi_image_free(data);
     cubeShader.use();
-   
+    cubeShader.setInt("diffuse", 0);
+    cubeShader.setInt("specular", 1);
     
     while (!glfwWindowShouldClose(window))
     {
@@ -213,13 +179,13 @@ int main(int argc, const char * argv[]) {
         
         cubeShader.use();
         cubeShader.setInt("material.diffuse", 0);
+        cubeShader.setInt("material.specular", 1);
         
-        cubeShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        cubeShader.setFloat("material.shininess", 64.0f);
+        cubeShader.setFloat("material.shininess", 32.0f);
         
-        cubeShader.setVec3("light.ambient",  glm::vec3(1.0f));
-        cubeShader.setVec3("light.diffuse",  glm::vec3(1.0f));
-        cubeShader.setVec3("light.specular", glm::vec3(1.0f));
+        cubeShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
+        cubeShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
+        cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
         cubeShader.setVec3("light.position", lightPos);
         cubeShader.setVec3("viewPos", camera.Position);
         
@@ -231,11 +197,14 @@ int main(int argc, const char * argv[]) {
         
         
         glm::mat4 model = glm::mat4(1.0f);
+        model=glm::rotate(model, glm::radians((float)glfwGetTime()*50.0f), glm::vec3(1.0f,0.5f,0.0f));
         cubeShader.setMat4fv("model", model);
         
         // render the cube
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
         glBindVertexArray(itemVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         
@@ -257,7 +226,6 @@ int main(int argc, const char * argv[]) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    
     
     glDeleteVertexArrays(1, &itemVAO);
     glDeleteVertexArrays(1, &lightVAO);
@@ -311,4 +279,42 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+unsigned int loadTexture(char const * path)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+        else return 0;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
