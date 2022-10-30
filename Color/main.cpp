@@ -38,7 +38,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-glm::vec3 lightPos(1.2f, 1.0f, 0.0f);
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 int main(int argc, const char * argv[]) {
     //init
@@ -163,8 +163,7 @@ int main(int argc, const char * argv[]) {
     
     
     cubeShader.use();
-    cubeShader.setInt("diffuse", 0);
-    cubeShader.setInt("specular", 1);
+   
     
     while (!glfwWindowShouldClose(window))
     {
@@ -194,15 +193,18 @@ int main(int argc, const char * argv[]) {
         cubeShader.setInt("material.diffuse", 0);
         cubeShader.setInt("material.specular", 1);
         
-        cubeShader.setFloat("material.shininess", 32.0f);
+        
+        cubeShader.setFloat("material.shininess", 64.0f);
         
         cubeShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
-        cubeShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
+        cubeShader.setVec3("light.diffuse",  0.3f, 0.3f, 0.3f);
         cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-        cubeShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        cubeShader.setFloat("light.constant",  1.0f);
+        cubeShader.setFloat("light.linear",    0.09f);
+        cubeShader.setFloat("light.quadratic", 0.032f);
+        
+        cubeShader.setVec3("light.position", lightPos);
         cubeShader.setVec3("viewPos", camera.Position);
-        
-        
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
@@ -228,18 +230,18 @@ int main(int argc, const char * argv[]) {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         
-        
-//        // also draw the lamp object
-//        lightShader.use();
-//        lightShader.setMat4fv("projection", projection);
-//        lightShader.setMat4fv("view", view);
-//        model = glm::mat4(1.0f);
-//        model = glm::translate(model, lightPos);
-//        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-//        lightShader.setMat4fv("model", model);
-//
-//        glBindVertexArray(lightVAO);
-//        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glm::mat4 model;
+        // also draw the lamp object
+        lightShader.use();
+        lightShader.setMat4fv("projection", projection);
+        lightShader.setMat4fv("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        lightShader.setMat4fv("model", model);
+
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         
         
         
